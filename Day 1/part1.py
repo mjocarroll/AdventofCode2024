@@ -104,7 +104,7 @@ def calculate_distance(l1, l2):
     for i in range(len(l1)):
         total = total + abs(l1[i] - l2[i])
 
-    print("DISTANCE: ", total)
+    return total
 
 
 
@@ -117,4 +117,4 @@ right_list = radix_sort(right_list)
 # print(left_list)
 # print(right_list)
 
-calculate_distance(left_list, right_list)
+print("DISTANCE: ", calculate_distance(left_list, right_list))
