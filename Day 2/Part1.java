@@ -62,7 +62,12 @@ public class Part1 {
     }
 
 
-
+    /*
+     * params:
+     * report   :   the items in the report as a str array
+     * allow_rm :   allow a level of recursion. prevents going down to the base case
+     * return   :   bool of whether the report is safe
+     */
     public boolean isReportSafe(String[] report) throws NumberFormatException {
         // determine whether report is safe
         // if so, incremement total counter

@@ -10,8 +10,6 @@ import java.io.FileNotFoundException;
 import java.lang.Integer;
 import java.lang.NumberFormatException;
 
-import java.util.Arrays;
-
 // adapting Part 1 to consider the problem dampener
 // now check full record, even on a fail, to see if it can be fixed
 
@@ -67,7 +65,8 @@ public class Part2 {
     /*
      * params:
      * report   :   the items in the report as a str array
-     * allow_rm :   allow a level of recursion. prevents going down to the base case     * 
+     * allow_rm :   allow a level of recursion. prevents going down to the base case
+     * return   :   bool of whether the report is safe
      */
     public boolean isReportSafe(String[] report, boolean allow_rm) throws NumberFormatException {
         // determine whether report is safe
@@ -91,31 +90,52 @@ public class Part2 {
             // secondly, check if this is increasing or decreasing
             if (step == 0 || Math.abs(step) > 3 || (step > 0 && decrFlag > 0) || (step < 0 && incrFlag > 0)) {
                 safe = false;
-                // PART 2: can't break. instead, try again to see if it passes if this element is removed
-                if (allow_rm) {
-                    String[] fudgedReport = new String[report.length-1];
-                    // wish I could do array splicing in java
-                    int k = 0;
-                    for (int j = 0; j < report.length; j++) {
-                        if (j != i) {
-                            fudgedReport[k] = report[j];
-                            k++;
-                        }
-                    }
-                    System.out.println(Arrays.toString(report));
-                    // System.out.println(Arrays.toString(fudgedReport));
-                    if (isReportSafe(fudgedReport, false)) {
-                        // then the record is safe without this item!
-                        // just return true now
-                        return true;
-                    }
-                }
+                break;
             }
 
             // set lastLevel for next loop
             lastLevel = currLevel;
         }
 
+        // if a problem was found, perform dampened checks
+        if (!safe) {
+            if (allow_rm) {
+                // for each element in report, try omitting it
+                for (int i = 0; i < report.length; i++) {
+                    String[] fudgedReport = removeElementFromArray(report, i);
+                    if (isReportSafe(fudgedReport, false)) {
+                        // then it passes dampened!
+                        return true;
+                    }
+                }
+            }
+            
+        }
+
         return safe;
     }
+
+
+
+    /*
+    * params
+    * report   :   the array to operate on
+    * i        :   the index of the element to remove from the array
+    * return   :   new array missing that element * 
+    */
+    public String[] removeElementFromArray(String[] report, int i) {
+        String[] fudgedReport = new String[report.length-1];
+        // wish I could do array splicing in java
+        int k = 0;
+        for (int j = 0; j < report.length; j++) {
+            if (j != i) {
+                fudgedReport[k] = report[j];
+                k++;
+            }
+        }
+
+        return fudgedReport;
+
+    }
+
 }
