@@ -98,18 +98,15 @@ public class Part2 {
         }
 
         // if a problem was found, perform dampened checks
-        if (!safe) {
-            if (allow_rm) {
-                // for each element in report, try omitting it
-                for (int i = 0; i < report.length; i++) {
-                    String[] fudgedReport = removeElementFromArray(report, i);
-                    if (isReportSafe(fudgedReport, false)) {
-                        // then it passes dampened!
-                        return true;
-                    }
+        if (!safe && allow_rm) {
+            // for each element in report, try omitting it
+            for (int i = 0; i < report.length; i++) {
+                String[] fudgedReport = removeElementFromArray(report, i);
+                if (isReportSafe(fudgedReport, false)) {
+                    // then it passes dampened!
+                    return true;
                 }
-            }
-            
+            } 
         }
 
         return safe;

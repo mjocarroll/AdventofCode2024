@@ -83,19 +83,13 @@ public class Part1 {
 
             // first, check step distance is safe
             int step = currLevel - lastLevel;
-            if (step == 0 || Math.abs(step) > 3) {
-                safe = false;
-                break;
-            }
-
             // log if we're currently increasing or decreasing (for future checks)
             if (step < 0) { decrFlag++; }
             if (step > 0) { incrFlag++; }
 
+            // first, check step distance is safe
             // secondly, check if this is increasing or decreasing
-            // if we've done the opposite before, this isn't safe
-            // (step is negative if we're decreasing, positive if increasing)
-            if ((step > 0 && decrFlag > 0) || (step < 0 && incrFlag > 0)) {
+            if (step == 0 || Math.abs(step) > 3 || (step > 0 && decrFlag > 0) || (step < 0 && incrFlag > 0)) {
                 safe = false;
                 break;
             }
