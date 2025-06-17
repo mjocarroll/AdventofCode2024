@@ -59,7 +59,6 @@ def find_XMAS(grid, i, j):
     # check each corner is an S or an M (only two of each, and they must be cis, not trans, across the A)
     if corners.count("S") == 2 and corners.count("M") == 2:
         if ul != dr and ur != dl:
-            print(corners)
             return True
 
     return False
