@@ -1,12 +1,10 @@
-## 19/06/2025, 26/06/2025
+## 26/06/2025
 ## mjocarroll
 # Day 5 of AoC 2024
 
-# store all rules in a dictionary (X as key, Ys as value)
-# then check the pages in each update. If X appears, does Y appear in the update too, and if so: is it after it?
-# then an extra function to sum all the middle pages
+# extend part 1 to correctly order the invalid updates
 
-# using a class so we only have to read the file once
+
 class Update_Info:
     def __init__(self, rules, updates):
         """
@@ -97,16 +95,16 @@ def parse_update(line):
 
 
 
-def determine_correct_rules(Updates):
+def determine_incorrect_rules(Updates):
     """
-    A function to collate all valid updates into a 2D list (of updates and their pages).
+    A function to collate all invalid updates into a 2D list (of updates and their pages).
     Parameters
     ----------
     Updates : Update_Info
         the object containing all rules and updates given by the input file.
     """
 
-    valid_updates = []
+    invalid_updates = []
 
     # for every update we need to validate
     for i in range(len(Updates.updates)):
@@ -125,10 +123,61 @@ def determine_correct_rules(Updates):
                         valid = False
                         break
 
-        if valid:
-            valid_updates.append(curr_update)
+        # only difference from part 1 is the word "not"
+        if not valid:
+            invalid_updates.append(curr_update)
 
-    return valid_updates
+    return invalid_updates
+
+
+
+def reorder_invalid_updates(invalid_updates, rules):
+    """
+    Given a list of invalid updates, reorder them to follow a set of given rules
+    Parameters
+    ----------
+    invalid_updates : 2D list
+        a 2D list of invalid updates (the pages of each update are given as a list)
+    rules : dict
+        a dictionary of page rules an update must adhere to
+    """
+
+    # for every invalid update, step through their pages
+    # if we find pages out of order, move it to after the current element
+
+    fixed_updates = []
+    for i in range(len(invalid_updates)):
+        curr_update = invalid_updates[i]
+        j = 0
+        while j < len(curr_update):
+            shuffles = 0
+            page = curr_update[j]
+            page_rules = rules.get(page)
+
+            # note: page_rules can't be none if a rule made it invalid
+            if page_rules is not None:
+                for k in range(len(page_rules)):
+                    while page_rules[k] in curr_update[0:j]:
+                        # move that element to curr_update[j]
+                        # (we are assuming pages cannot be mutual rules for one another - otherwise that makes an infinite loop)
+                        # print("<<", curr_update, "RULE : ", page, page_rules)
+                        for l in range(len(curr_update[0:j])):
+                            if curr_update[l] == page_rules[k]:
+                                curr_update.remove(page_rules[k])
+                                curr_update = curr_update[0:j] + [page_rules[k]] + curr_update[j:]
+                                shuffles += 1
+                        # print(">>", curr_update)
+
+            # resume j from the new position of the element we just handled the rules for
+            # in case our shuffling makes new rules relevant
+            j -= shuffles
+            # increment for next loop
+            j += 1
+            
+                
+        fixed_updates.append(curr_update)
+
+    return fixed_updates
 
 
 
@@ -138,7 +187,7 @@ def sum_middle_pages(updates):
     Parameters
     ----------
     updates : 2D list
-        a 2D list of valid updates (the pages of each update are given as a list)
+        a 2D list of (hopefully now) valid updates (the pages of each update are given as a list)
     """
 
     sum = 0
@@ -155,8 +204,11 @@ Updates = collate_dict_and_updates("input.txt")
 # print("RULES   :", Updates.rules)
 # print("UPDATES :", Updates.updates)
 
-valid_updates = determine_correct_rules(Updates)
-# print("VALID UPDATES : ", valid_updates)
+invalid_updates = determine_incorrect_rules(Updates)
+# print("INVALID UPDATES : ", invalid_updates)
 
-sum = sum_middle_pages(valid_updates)
+fixed_updates = reorder_invalid_updates(invalid_updates, Updates.rules)
+# print("FIXED UPDATES : ", fixed_updates)
+
+sum = sum_middle_pages(fixed_updates)
 print("SUM : ", sum)
