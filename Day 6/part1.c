@@ -108,7 +108,7 @@ void findPath(char map[ROWS][COLS], int g_row, int g_col, int dir) {
         else if (dir == D) dir = L;
         else if (dir == L) dir = U;
 
-        findPath(map, g_row, g_col, dir);
+        return findPath(map, g_row, g_col, dir);
     }
 
     // case: nothing is facing guard
@@ -120,7 +120,7 @@ void findPath(char map[ROWS][COLS], int g_row, int g_col, int dir) {
         else if (dir == D) g_row++;
         else if (dir == L) g_col--;
 
-        findPath(map, g_row, g_col, dir);
+        return findPath(map, g_row, g_col, dir);
     }
     
     return;
