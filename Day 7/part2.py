@@ -4,6 +4,7 @@
 
 # given a file with some equations (minus their operators), see what operations can be added to make the equation true
 # parse file, solve recursively
+# PART 2: consider concatenation
 
 
 # recursively find all operator options for the equation
@@ -44,6 +45,13 @@ def recursiveSolve(target, operands, total, index):
     mulTotal = total * operands[index]
     if (recursiveSolve(target, operands, mulTotal, index+1)):
         return True
+
+    # PART 2: concatenation
+    # concatenate onto the current total
+    conTotal = int(str(total) + str(operands[index]))
+    if (recursiveSolve(target, operands, conTotal, index+1)):
+        return True
+
 
     return False
 
@@ -91,4 +99,4 @@ def parseFile(filename):
 
 
 # MAIN
-parseFile("index.txt")
+parseFile("input.txt")
