@@ -2,8 +2,9 @@
 # mjocarroll
 # Day 11 of AoC 2024
 
-# time to blink at some stones
+# too many blinks to brute force this method; good idea to rely on caching to speed up computation
 
+from functools import cache
 
 # read stones in as a list
 def read_stones_from_file(filename):
@@ -26,6 +27,8 @@ def read_stones_from_file(filename):
 
 # because a stone never really cares about its neighbors, we can compute each stone individually
 # for n blinks
+# For part 2, we can cache this result so if this stone is ever found again, we don't have to recompute.
+@cache
 def blink_n_times(stone, n):
     """
     A function to change a stone as given by the rules indicated in this challenge. Returns how many stones are there after blinking n times at the given stone
@@ -65,6 +68,6 @@ stone_count = 0
 
 print("Blinking...")
 for i in range(len(stones)):
-    stone_count = stone_count + blink_n_times(stones[i], 25)
+    stone_count = stone_count + blink_n_times(stones[i], 75)
 
-print("STONES AFTER 25 BLINKS:", stone_count)
+print("STONES AFTER 75 BLINKS:", stone_count)
