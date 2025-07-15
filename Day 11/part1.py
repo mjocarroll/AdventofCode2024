@@ -24,64 +24,50 @@ def read_stones_from_file(filename):
 
 
 
-# perform operation on a given stone
-def change_stone(stones, index):
+# because a stone never really cares about its neighbors, we can compute each stone individually
+# for n blinks
+def blink_n_times(stone, n):
     """
-    A function to change a stone as given by the rules indicated in this challenge. Returns any changes needed to the index.
+    A function to change a stone as given by the rules indicated in this challenge. Returns how many stones are there after blinking n times at the given stone
     Parameters
     ----------
-    stones : num list
-        the stones
-    index : num
-        location of the stone we're concerned with
+    stone : num
+        the number on the stone we're currently looking at
+    n : num
+        the number of blinks (recursions) we still need to do
     """
 
-    # if a stone is 0, make it a 1
-    if stones[index] == 0:
-        stones[index] = 1
-        return index
+    # base case: no more blinks
+    if n <= 0:
+        return 1
+    
+    # else, we need to blink again
+    # apply rules and recurse
+    # 0 -> 1
+    if stone == 0:
+        return blink_n_times(1, n-1)
 
-    # if a stone has an even number of digits, split it into two stones
-    if len(str(stones[index])) % 2 == 0:
-        s = str(stones[index])
+    # even digit nm -> n, m
+    if len(str(stone)) % 2 == 0:
+        s = str(stone)
         mid = int(len(s) / 2)
-        stone1 = int(s[0:mid])
-        stone2 = int(s[mid:])
-        stones[index] = stone1
-        stones.insert(index+1, stone2)
 
-        return index+1
+        s1 = blink_n_times(int(s[0:mid]), n-1)
+        s2 = blink_n_times(int(s[mid:]), n-1)
+        
+        return s1 + s2
 
-    # else, multiply by 2024
-    stones[index] = stones[index] * 2024
-
-    return index
-
-
-
-# perform operations on all stones for this blink
-def blink(stones):
-    """
-    A function to iterate through each stone in the line (given as a list) and call an operation to change it, making the changes in the blink atomic.
-    Parameters
-    ----------
-    stones : num list
-        the stones to change, in order
-    """
-
-    i = 0
-    while i < len(stones):
-        # change stone and amend our current index (in case any splits happened)
-        i = change_stone(stones, i)
-        i = i + 1
+    # else, * 2024
+    return blink_n_times(stone * 2024, n-1)
 
 
 
 # MAIN
 stones = read_stones_from_file("input.txt")
+stone_count = 0
 
 print("Blinking...")
-for i in range(25):
-    blink(stones)
+for i in range(len(stones)):
+    stone_count = stone_count + blink_n_times(stones[i], 25)
 
-print("STONES AFTER 25 BLINKS:", len(stones))
+print("STONES AFTER 25 BLINKS:", stone_count)
