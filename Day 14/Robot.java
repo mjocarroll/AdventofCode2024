@@ -58,10 +58,10 @@ public class Robot {
      * @param secs   : how many seconds of movement are happening
      */
     void move(int height, int width, int secs) {
-        // System.out.println("# "+ this.id + " CURRENT PX, PY: " + this.px + ", " + this.py);
-
         int xShift = this.px + (this.vx * secs);
         this.px = xShift % width;
+        // Java doesn't have a very pleasing modulo operator so we need to have this check
+        // to ensure the coord isn't negative
         if (this.px < 0) {
             this.px = width + this.px;
         }
@@ -71,8 +71,5 @@ public class Robot {
         if (this.py < 0) {
             this.py = height + this.py;
         }
-
-        // System.out.println("# "+ this.id + " XSHIFT = " + xShift + " YSHIFT = " + yShift);
-        // System.out.println("# "+ this.id + " PX, PY AFTER " + secs + " SECS: " + this.px + ", " + this.py);
     }
 }
