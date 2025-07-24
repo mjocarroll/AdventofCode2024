@@ -33,8 +33,8 @@ fs.readFile(filename, "utf8", (err, data) => {
     // find where the robot is
     // line below courtesy of https://lage.us/Javascript-Item-in-2d-Array-Using-indexOf.html
     let index: number = ([].concat.apply([], ([].concat.apply([], map))).indexOf("@"));
-    let robotPos: Dictionary<number> = { x : Math.floor(index / map.length), y : index % map[0].length };
-    moveRobot(map, path[i], robotPos)
+    let robotPos: Dictionary<number> = { x : Math.floor(index / map[0].length), y : index % map[0].length };
+    moveRobot(map, path[i], robotPos);
   }
 
   console.log(formatMap(map));
